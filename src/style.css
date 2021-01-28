@@ -8,3 +8,15 @@ div {
   padding-left: 15px;
   padding-bottom: 5px;
 }
+button {
+  cursor: pointer;
+  font-weight: bold;
+}
+.done-button {
+  background-color: rgb(0, 133, 0);
+  color: white;
+  border-radius: 7px;
+}
+#priority-selector {
+  cursor: pointer;
+}
