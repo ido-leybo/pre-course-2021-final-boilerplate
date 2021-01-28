@@ -1,54 +1,75 @@
- const viewSection = document.getElementById('viewSection');
 const button = document.getElementById("add-button");
+const sortButton = document.getElementById('sort-button');
+const deleteButton = document.createElement("button");
+deleteButton.classList.add("delete-button");
+deleteButton.innerText = "X";
 const counter = document.getElementById('counter');
 let todoCounter = 0;
 counter.innerText = todoCounter;
-const selector = document.getElementById("priority-selector")
-const sortButton = document.getElementById('sort-button');
-const ul = document.createElement("ul")
-viewSection.appendChild(ul);
+let todoListArr = [];
+let sortArr = [];
 //add a "add" button to add more tasks to the Todo list every "click"
-button.addEventListener("click", event => {
+button.addEventListener("click", () => {
+    addContainer()
+    addTaskToView();
+});
+    //add a done button to remove the task we done //need to work on
+deleteButton.addEventListener("click", event => {
+    deleteTaskView(event)
+}); 
+//need to work on
+sortButton.addEventListener("click", sortTasks());
+
+function addTaskToView() {
+    const viewSection = document.getElementById('viewSection');
+    for (let task of todoListArr) {
+        viewSection.appendChild(task);
+    }
     todoCounter++
     counter.innerText = todoCounter;
-    let div = document.createElement('div');
-    div.classList.add('todo-container');
-    let divPriority = document.createElement('div');
+};
+function deleteTaskView(event) {
+    todoCounter--;
+    counter.innerText = todoCounter;
+    let removeDiv = event.target.closest('.todo-container');
+    removeDiv.remove();
+}
+function addContainer() {
+    const mainDiv = document.createElement('div');
+    mainDiv.classList.add('todo-container');
+    const divPriority = document.createElement('div');
     divPriority.classList.add('todo-priority');
-    let divDate = document.createElement('div');
-    divDate.classList.add('todo-created-at');
-    divDate.innerText = getCurrentDate();
-    let divText = document.createElement('div');
-    divText.classList.add('todo-text');
+    const selector = document.getElementById("priority-selector");
     let selectorValue = selector.value;
+    const divDate = document.createElement('div');
+    divDate.classList.add('todo-created-at');
+    const divText = document.createElement('div');
+    divText.classList.add('todo-text');
+    mainDiv.append(divPriority);
+    mainDiv.append(divDate);
+    mainDiv.append(divText);
+    divPriority.innerText = selectorValue;
+    divDate.innerText = getCurrentDate();
+    divText.innerText = input_text();
+    todoListArr.push(mainDiv);
+};
+function input_text() {
     let inputText = document.getElementById('text-input').value;
-    divText.innerText = inputText;
     document.getElementById('text-input').value = '';
     document.getElementById('text-input').focus();
-    const doneButton = document.createElement("button");
-    doneButton.classList.add("done-button");
-    doneButton.innerText = "done";
-    //add a done button to remove the task we done 
-    doneButton.addEventListener("click", event => {
-        todoCounter--;
-        counter.innerText = todoCounter;
-        let removeDiv = event.target.closest('.todo-container');
-        removeDiv.remove(); 
-    });
-    div.append(doneButton);
-    divPriority.append(selectorValue);
-    div.append(divPriority);
-    div.append(divDate);
-    div.append(divText);
-    ul.append(div);
-});
-
+    return inputText;
+}
 function getCurrentDate() {
     const date = new Date(); 
     let nDate = date.toISOString().split('T')[0] + ' ' + date.toTimeString().split(' ')[0];
     return nDate;
 };
 
+
+//need to work on
+function sortTasks() {
+
+}
 
 
 

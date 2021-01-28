@@ -1,3 +1,7 @@
+body {
+  height: 100vh;
+  background-color: rgba(10, 160, 145, 0.5);
+}
 ul {
   list-style: none;
   display: inline;
@@ -6,16 +10,19 @@ div {
   position: relative;
   display: flex;
   padding-left: 15px;
+  padding-right: 10px;
   padding-bottom: 5px;
+  padding-top: 5px;
+}
+.todo-container:hover {
+  background-color: rgba(112, 128, 144, 0.582);
+  cursor: default;
+  width: fit-content;
+  border-radius: 3px;
 }
 button {
   cursor: pointer;
   font-weight: bold;
-}
-.done-button {
-  background-color: rgb(0, 133, 0);
-  color: white;
-  border-radius: 7px;
 }
 #priority-selector {
   cursor: pointer;
