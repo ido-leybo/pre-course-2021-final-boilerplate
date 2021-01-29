@@ -15,7 +15,9 @@
     <div class="count">Number of Todo's: <strong id="counter"></strong></div>
     <section id="controlSection">
       <input id="text-input" type="text" name="task" placeholder="Enter new task">
-      <button id="add-button">add&#10158</button></br>
+      <button id="add-button">add&#10158</button>
+    </input>
+      <button id="search-button">search</button>
       <div class="box"></div>
         <select name="priority" id="priority-selector">
           <option value="1">1</option>
@@ -26,10 +28,11 @@
         </select>
       </div>  
       <button id="sort-button">sort &#8645</button>
-    </section>
-  </main>  
-  <section id="viewSection">
-  </section> 
+      </section>
+      <section id="viewSection">
+        <div id="loading"></div>
+      </section> 
+    </main>  
   <script src="./main.js"></script>
 </body>
 </html>
