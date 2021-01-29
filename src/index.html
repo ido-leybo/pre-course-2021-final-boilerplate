@@ -8,22 +8,26 @@
   <link rel="stylesheet" href="./style.css">
 </head>
 <body>
-  <header>
-    <h1><u>Todo list</u></h1>
-  </header>
-  <div>Number of Todo's: <strong id="counter"></strong></div>
-  <section id="controlSection">
-    <input id="text-input" type="text" name="task" placeholder="Enter new to do task">
-    <select name="priority" id="priority-selector">
-        <option value="1">1</option>
-        <option value="2">2</option>
-        <option value="3">3</option>
-        <option value="4">4</option>
-        <option value="5">5</option>
-    </select>
-    <button id="add-button">add</button>
-    <button id="sort-button">sort</button>
-  </section>
+  <main id="main">
+    <header>
+      <h1><u>Todo list</u></h1>
+    </header>
+    <div class="count">Number of Todo's: <strong id="counter"></strong></div>
+    <section id="controlSection">
+      <input id="text-input" type="text" name="task" placeholder="Enter new task">
+      <button id="add-button">add&#10158</button></br>
+      <div class="box"></div>
+        <select name="priority" id="priority-selector">
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+        </select>
+      </div>  
+      <button id="sort-button">sort &#8645</button>
+    </section>
+  </main>  
   <section id="viewSection">
   </section> 
   <script src="./main.js"></script>

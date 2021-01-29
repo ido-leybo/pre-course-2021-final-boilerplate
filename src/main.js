@@ -8,7 +8,7 @@ let todoCounter = 0;
 let containerId = 0;
 counter.innerText = todoCounter;
 let todoListArr = [];
-let sortArr = [];
+let idArr = [];
 
 // class Task {
 //     constructor(text, priority) {}
@@ -16,19 +16,15 @@ let sortArr = [];
 //add a "add" button to add more tasks to the Todo list every "click"
 addButton.addEventListener("click", () => {
     taskToList();
-    // addTaskToViewSection();
     plusCounter();
     
 });
-    //add a done button to remove the task we done //need to work on
-
-//need to work on
+//add a sort button to sort the list by priority value
 sortButton.addEventListener("click", sortTasks);
-//
-function addTaskToViewSection() { 
+function getAndShow() { // get the list from the sort action or from the local storage and show it in the html
     if (todoListArr[0]) {
-        for (let task of todoListArr) {
-            displayTask(task)
+        for (let task of todoListArr) {     
+            displayTask(task);
             todoCounter++;
             counter.innerText = todoCounter;
         }
@@ -38,12 +34,13 @@ function plusCounter() {
     todoCounter++
     counter.innerText = todoCounter;
 }
-function taskToList() {
+function taskToList() { // put every task in the main list
     let selectorValue = selector.value;
+    const text = input_text();
     let task = {
-        taskId: containerId,
+        taskId: `${text}${containerId}`,
         priority: selectorValue,
-        text: input_text(),
+        text: text,
         date: getCurrentDate()
     };
     containerId++;
@@ -52,13 +49,18 @@ function taskToList() {
     // jsonBinPostTask(task)
     localStorage.setItem('my-todo', JSON.stringify(todoListArr));
 };
-function deleteTaskView(event) {
+function deleteTaskView(event) {  // delete a task from the list and from the local storage.
     todoCounter--;
     counter.innerText = todoCounter;
+    // window.localStorage.removeItem('my-todo');
     let removeDiv = event.target.parentElement;
     let id = removeDiv.id;
     removeDiv.remove();
-    todoListArr = todoListArr.filter((task) => task.taskId !== parseInt(id));
+    // localStorage.setItem('task-id', JSON.stringify(id)); // Need to check how to delete or change the id from localStorage!!!!!!
+    console.log(localStorage);
+    todoListArr = todoListArr.filter((task) => task.taskId !== id);
+    console.log(todoListArr)
+    localStorage.setItem('my-todo', JSON.stringify(todoListArr));
     // let taskToDelete = todoListArr.find(task => task.taskId === id);
     // jsonBinDeleteTask(taskToDelete.id);
 }
@@ -68,25 +70,30 @@ function input_text() {
     inputText.focus();
     return text;
 };
-function getCurrentDate() {
+function getCurrentDate() { // get the time that clicked
     const date = new Date(); 
     let nDate = date.toISOString().split('T')[0] + ' ' + date.toTimeString().split(' ')[0];
     return nDate;
 };
-//need to work on
-function sortTasks() {
+function sortTasks() {  // sort the list by priority
     clean_presented_list();
     todoListArr = todoListArr.sort((a, b) => b.priority - a.priority);
-    addTaskToViewSection();
+    getAndShow();
 }
-function clean_presented_list() {
+function clean_presented_list() { // first it cleans the shown list before the sort action
     while(viewSection.firstChild){
-        viewSection.removeChild(viewSection.lastChild); // first it cleans the shown list;
+        viewSection.removeChild(viewSection.lastChild); 
     }
     todoCounter = 0;
     counter.innerText = todoCounter;
 };
-function displayTask(task) {
+function displayTask(task) { // put the task in div's and show them in the html
+    const deleteButton = document.createElement("button");
+    deleteButton.addEventListener("click", event => {
+        deleteTaskView(event)
+    });
+    deleteButton.classList.add("delete-button");
+    deleteButton.innerText = "X";
     const mainDiv = document.createElement('div');
     mainDiv.classList.add('todo-container');
     mainDiv.setAttribute("id", `${task.taskId}`);
@@ -96,16 +103,14 @@ function displayTask(task) {
     divDate.classList.add('todo-created-at');
     const divText = document.createElement('div');
     divText.setAttribute("class", 'todo-text');
-    const deleteButton = document.createElement("button");
-    deleteButton.classList.add("delete-button");
-    deleteButton.innerText = "X";
-    deleteButton.addEventListener("click", event => {
-        deleteTaskView(event)
-    }); 
+    const checkBox = document.createElement("input");
+    checkBox.setAttribute("type", "checkbox");
+    checkBox.setAttribute("class", "checkbox");
     divPriority.innerText = task.priority;
     divDate.innerText = task.date;
     divText.innerText = task.text;
     mainDiv.append(deleteButton);
+    mainDiv.append(checkBox);
     mainDiv.append(divPriority);
     mainDiv.append(divDate);
     mainDiv.append(divText);
@@ -164,9 +169,7 @@ function displayTask(task) {
 window.addEventListener("DOMContentLoaded", async(event) => {
 //     // await jsonBinGetAllTasks();
     let tasks = JSON.parse(localStorage.getItem('my-todo') || '[]');
-    console.log(tasks);
     todoListArr = tasks;
-    console.log(todoListArr);
-    addTaskToViewSection();
+    getAndShow();
 });
     

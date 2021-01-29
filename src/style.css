@@ -1,6 +1,20 @@
 body {
   height: 100vh;
-  background-color: rgba(10, 160, 145, 0.5);
+  background-color: #004882;
+  text-align: center;
+}
+
+#controlSection {
+}
+#viewSection {
+  margin-left: 30%;
+  position: relative;
+  margin-top: 20px;
+}
+h1 {
+  font-size: 80px;
+  font-family: cursive;
+  margin-bottom: 10px;
 }
 ul {
   list-style: none;
@@ -9,21 +23,167 @@ ul {
 div {
   position: relative;
   display: flex;
+  flex-direction: row;
   padding-left: 15px;
   padding-right: 10px;
   padding-bottom: 5px;
   padding-top: 5px;
+  width: fit-content;
+}
+.count {
+  margin-left: 35%;
+  font-size: 30px;
+  font-weight: 600;
+  font-family: Courier, cursive;
+}
+#counter {
+  font-size: 40px;
+  margin-bottom: 5px;
+  padding: 1px;
+}
+.todo-container {
+  font-family: Courier, cursive, Optima, monospace;
+  font-weight: 550;
 }
 .todo-container:hover {
   background-color: rgba(112, 128, 144, 0.582);
   cursor: default;
-  width: fit-content;
+  width: 600px;
   border-radius: 3px;
+}
+#priority-selector {
+  content: "\f13a";
+  font-family: FontAwesome;
+  font-size: 40px;
+  margin: 5px;
+  margin-top: 10px;
+  background-color: #0563af;
+  color: white;
+  padding: 12px;
+  width: 70px;
+  border: none;
+  font-size: 20px;
+  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  box-shadow: 5px 2px 16px 5px rgba(0, 0, 0, 0.411);
+  -webkit-box-shadow: 5px 2px 16px 5px rgba(0, 0, 0, 0.397);
+  -moz-box-shadow: 5px 2px 16px 5px rgba(0, 0, 0, 0.322);
+}
+#priority-selector:hover {
+  color: rgba(255, 255, 255, 0.6);
+  background-color: rgba(255, 255, 255, 0.2);
+}
+#priority-selector option {
+  background-color: #0563af;
 }
 button {
   cursor: pointer;
   font-weight: bold;
+  border-radius: 3px;
+  margin: 2px;
 }
-#priority-selector {
+#add-button {
+  background-color: #19c5b156;
+  font-size: 22px;
+  margin-right: 0;
+  margin-left: 10px;
+  border: none;
+  box-shadow: 5px 2px 16px 5px rgba(0, 0, 0, 0.425);
+  -webkit-box-shadow: 5px 2px 16px 5px rgba(0, 0, 0, 0.363);
+  -moz-box-shadow: 5px 2px 16px 5px rgba(0, 0, 0, 0.397);
+}
+#add-button:hover {
+  box-shadow: -1px -1px 43px 14px rgba(0, 0, 0, 0.55);
+  -webkit-box-shadow: -1px -1px 43px 14px rgba(0, 0, 0, 0.55);
+  -moz-box-shadow: -1px -1px 43px 14px rgba(0, 0, 0, 0.55);
+}
+#sort-button {
+  background-color: rgb(184, 158, 110);
+  font-size: 25px;
+  margin-left: 0;
+  margin-bottom: 5px;
+  border: none;
+  padding: 5px;
+  box-shadow: 5px 2px 16px 5px rgba(0, 0, 0, 0.466);
+  -webkit-box-shadow: 5px 2px 16px 5px rgba(0, 0, 0, 0.411);
+  -moz-box-shadow: 5px 2px 16px 5px rgba(0, 0, 0, 0.37);
+}
+#sort-button:hover {
+  box-shadow: -1px -1px 43px 14px rgba(0, 0, 0, 0.55);
+  -webkit-box-shadow: -1px -1px 43px 14px rgba(0, 0, 0, 0.55);
+  -moz-box-shadow: -1px -1px 43px 14px rgba(0, 0, 0, 0.55);
+}
+.delete-button {
+  background-color: rgba(88, 84, 84, 0.623);
+}
+.delete-button:hover {
+  background-color: rgba(109, 11, 11, 0.856);
+  color: white;
+}
+#text-input {
+  padding: 3px;
+  font-size: 17px;
+  border: 8px inset #119992;
+  box-shadow: 0px 0px 5px 0px rgba(42, 42, 42, 0.75);
+  font-weight: 300;
+  font-family: monospace, Andale;
+  font-style: none;
+  width: 400px;
+}
+#text-input:focus {
+  outline: none;
+}
+#text-input:hover {
+  box-shadow: -4px -5px 60px -12px rgba(0, 0, 0, 0.42) inset;
+  -webkit-box-shadow: -4px -5px 60px -12px rgba(0, 0, 0, 0.42) inset;
+  -moz-box-shadow: -4px -5px 60px -12px rgba(0, 0, 0, 0.42) inset;
+}
+.checkbox {
   cursor: pointer;
+  -ms-transform: scale(2);
+  -moz-transform: scale(2);
+  -webkit-transform: scale(2);
+  -o-transform: scale(2);
+  transform: scale(2);
+  padding: 10px;
+  margin-left: 10px;
+  margin-top: 8px;
+}
+.checkbox:hover {
+  box-shadow: -1px -1px 43px 14px rgba(0, 0, 0, 0.55) inset;
+  -webkit-box-shadow: -1px -1px 43px 14px rgba(0, 0, 0, 0.55) inset;
+  -moz-box-shadow: -1px -1px 43px 14px rgba(0, 0, 0, 0.55) inset;
+}
+input[type="checkbox"]:checked {
+  box-shadow: 0 0 0 1px rgba(20, 45, 155, 0.555);
+}
+@media screen and (max-width: 960px) {
+  body {
+    width: 758px;
+    overflow: hidden;
+  }
+  #viewSection {
+    width: 100%;
+    height: 100vh;
+  }
+}
+@media screen and (max-width: 758px) {
+  body {
+    width: 100%;
+  }
+  #viewSection {
+    height: 100vh;
+    width: 100%;
+  }
+}
+@media screen and (max-width: 480px) {
+  body {
+    max-width: 480px;
+    width: auto;
+    margin: 20px;
+  }
+  #viewSection {
+    width: 92%;
+    padding: 4%;
+  }
 }
