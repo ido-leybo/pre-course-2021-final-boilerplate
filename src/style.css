@@ -1,20 +1,41 @@
 body {
   height: 100vh;
-  background-color: #004882;
+  background: rgb(217, 171, 42);
+  background: linear-gradient(
+    90deg,
+    rgba(145, 113, 28, 0.815) 9%,
+    rgba(119, 85, 4, 0.788) 49%,
+    rgba(88, 68, 16, 0.671) 85%
+  );
   text-align: center;
 }
-
+#main {
+  margin-left: auto;
+  margin-right: auto;
+  background: url(./background_img.jpg);
+  background-size: 800px 1350px;
+  border: 1px solid rgb(34, 31, 21);
+  border-radius: 10px;
+  width: 800px;
+}
 #controlSection {
+  border-bottom: 1px solid black;
+  width: 650px;
+  margin-left: 75px;
+  padding-bottom: 5px;
 }
 #viewSection {
-  margin-left: 30%;
   position: relative;
+  margin-left: 11%;
   margin-top: 20px;
+  margin-bottom: 10px;
 }
 h1 {
   font-size: 80px;
   font-family: cursive;
   margin-bottom: 10px;
+  margin-top: 10px;
+  padding-top: 20px;
 }
 ul {
   list-style: none;
@@ -51,18 +72,25 @@ div {
   width: 600px;
   border-radius: 3px;
 }
+div .todo-priority {
+  font-weight: bold;
+  font-size: 20px;
+  padding: 0;
+  padding-left: 10px;
+}
 #priority-selector {
   content: "\f13a";
   font-family: FontAwesome;
-  font-size: 40px;
+  font-size: 20px;
+  font-weight: bold;
   margin: 5px;
   margin-top: 10px;
-  background-color: #0563af;
-  color: white;
+  background-color: rgb(184, 158, 110);
+  color: black;
   padding: 12px;
   width: 70px;
   border: none;
-  font-size: 20px;
+  border-radius: 3px;
   box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
   cursor: pointer;
   box-shadow: 5px 2px 16px 5px rgba(0, 0, 0, 0.411);
@@ -71,19 +99,22 @@ div {
 }
 #priority-selector:hover {
   color: rgba(255, 255, 255, 0.6);
-  background-color: rgba(255, 255, 255, 0.2);
+  background-color: rgba(66, 59, 59, 0.822);
 }
 #priority-selector option {
-  background-color: #0563af;
+  background-color: #b7deee;
 }
+/* css for the buttons */
 button {
   cursor: pointer;
   font-weight: bold;
+  font-family: monospace;
   border-radius: 3px;
   margin: 2px;
 }
 #add-button {
-  background-color: #19c5b156;
+  background-color: #b7deee;
+  padding: 5px;
   font-size: 22px;
   margin-right: 0;
   margin-left: 10px;
@@ -93,9 +124,23 @@ button {
   -moz-box-shadow: 5px 2px 16px 5px rgba(0, 0, 0, 0.397);
 }
 #add-button:hover {
-  box-shadow: -1px -1px 43px 14px rgba(0, 0, 0, 0.55);
-  -webkit-box-shadow: -1px -1px 43px 14px rgba(0, 0, 0, 0.55);
-  -moz-box-shadow: -1px -1px 43px 14px rgba(0, 0, 0, 0.55);
+  color: rgba(255, 255, 255, 0.6);
+  background-color: rgba(66, 59, 59, 0.822);
+}
+#search-button {
+  padding: 3px;
+  background-color: #b7deee;
+  font-size: 22px;
+  margin-right: 0;
+  margin-left: 10px;
+  border: none;
+  box-shadow: 5px 2px 16px 5px rgba(0, 0, 0, 0.425);
+  -webkit-box-shadow: 5px 2px 16px 5px rgba(0, 0, 0, 0.363);
+  -moz-box-shadow: 5px 2px 16px 5px rgba(0, 0, 0, 0.397);
+}
+#search-button:hover {
+  color: rgba(255, 255, 255, 0.6);
+  background-color: rgba(66, 59, 59, 0.822);
 }
 #sort-button {
   background-color: rgb(184, 158, 110);
@@ -109,9 +154,23 @@ button {
   -moz-box-shadow: 5px 2px 16px 5px rgba(0, 0, 0, 0.37);
 }
 #sort-button:hover {
-  box-shadow: -1px -1px 43px 14px rgba(0, 0, 0, 0.55);
-  -webkit-box-shadow: -1px -1px 43px 14px rgba(0, 0, 0, 0.55);
-  -moz-box-shadow: -1px -1px 43px 14px rgba(0, 0, 0, 0.55);
+  color: rgba(255, 255, 255, 0.6);
+  background-color: rgba(66, 59, 59, 0.822);
+}
+#undo-button {
+  background-color: rgb(184, 158, 110);
+  font-size: 25px;
+  margin-left: 0;
+  margin-bottom: 5px;
+  border: none;
+  padding: 5px;
+  box-shadow: 5px 2px 16px 5px rgba(0, 0, 0, 0.466);
+  -webkit-box-shadow: 5px 2px 16px 5px rgba(0, 0, 0, 0.411);
+  -moz-box-shadow: 5px 2px 16px 5px rgba(0, 0, 0, 0.37);
+}
+#undo-button:hover {
+  color: rgba(255, 255, 255, 0.6);
+  background-color: rgba(66, 59, 59, 0.822);
 }
 .delete-button {
   background-color: rgba(88, 84, 84, 0.623);
@@ -123,7 +182,7 @@ button {
 #text-input {
   padding: 3px;
   font-size: 17px;
-  border: 8px inset #119992;
+  border: 8px inset #a58b46;
   box-shadow: 0px 0px 5px 0px rgba(42, 42, 42, 0.75);
   font-weight: 300;
   font-family: monospace, Andale;
@@ -155,7 +214,7 @@ button {
   -moz-box-shadow: -1px -1px 43px 14px rgba(0, 0, 0, 0.55) inset;
 }
 input[type="checkbox"]:checked {
-  box-shadow: 0 0 0 1px rgba(20, 45, 155, 0.555);
+  box-shadow: 0 0 0 1px#b7deee;
 }
 #loading {
   border: 16px solid #f3f3f3; /* Light grey */
@@ -163,17 +222,22 @@ input[type="checkbox"]:checked {
   border-radius: 50%;
   width: 120px;
   height: 120px;
+  margin-top: 40px;
+  margin-left: 240px;
   animation: spin 2s linear infinite;
 }
-
 @keyframes spin {
   0% {
     transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(180deg);
   }
   100% {
     transform: rotate(360deg);
   }
 }
+/* Responsive design */
 @media screen and (max-width: 960px) {
   body {
     width: 758px;
