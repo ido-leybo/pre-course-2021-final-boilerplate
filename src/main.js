@@ -7,6 +7,8 @@ const counter = document.getElementById('counter');
 const searchButton = document.getElementById("search-button");
 const loading = document.getElementById("loading");
 const undoButton = document.getElementById("undo-button");
+const darkModeButton = document.getElementById("dark-mode");
+const finalDateSelect = document.getElementById("final-date");
 
 let tasksCounter = 0;
 let containerId = 0;
@@ -14,6 +16,8 @@ let todoListArr = [];
 let searchTodoArr = [];
 let idArr = [];
 let loadingPage = true;
+let darkMode = false;
+let searchText = true;
 
 counter.innerText = tasksCounter;
 //undo section
@@ -28,7 +32,44 @@ searchButton.addEventListener("click", searchGoTo);
 //add a sort button to sort the list by priority value
 sortButton.addEventListener("click", sortTasks);
 undoButton.addEventListener("click", undo);
-
+darkModeButton.addEventListener("click", darkModeAction);
+function darkModeAction() {
+    if (!darkMode) {
+        darkModeButton.style.background = 'brown';
+        darkModeButton.style.color = 'white';
+        document.body.style.backgroundColor = 'darkblue';
+        inputText.style.backgroundColor = 'rgb(46, 44, 44)';
+        inputText.style.color = 'white';
+        addButton.style.backgroundColor = 'rgb(46, 44, 44)';
+        addButton.style.color = 'white';
+        searchButton.style.backgroundColor = 'rgb(46, 44, 44)';
+        searchButton.style.color = 'white';
+        undoButton.style.backgroundColor = 'rgb(39, 4, 4)';
+        undoButton.style.color = 'white';
+        sortButton.style.backgroundColor = 'rgb(39, 4, 4)';
+        sortButton.style.color = 'white';
+        selector.style.backgroundColor = 'rgb(39, 4, 4)';
+        selector.style.color = 'gray';
+        darkMode = true;
+    } else {
+        darkModeButton.style.background = 'darkgray';
+        darkModeButton.style.color = 'black';
+        document.body.style.backgroundColor = 'brown'
+        inputText.style.backgroundColor = 'white';
+        inputText.style.color = 'black';
+        addButton.style.backgroundColor = '#b7deee';
+        addButton.style.color = 'black';
+        searchButton.style.backgroundColor = '#b7deee';
+        searchButton.style.color = 'black';
+        undoButton.style.backgroundColor = ' rgb(184, 158, 110)';
+        undoButton.style.color = 'black';
+        sortButton.style.backgroundColor = ' rgb(184, 158, 110)';
+        sortButton.style.color = 'black';
+        selector.style.backgroundColor = 'rgb(184, 158, 110)';
+        selector.style.color = 'black';
+        darkMode = false;
+    }
+}
 function undo(){
     clean_presented_list();
     if(isPreviousAddAction){
@@ -50,8 +91,15 @@ function searchGoTo() {
     console.log(searchTodoArr);
     clean_presented_list();
     getAndShow(searchTodoArr);
+    if (searchText) {
+        searchButton.innerHTML = 'Refresh&#10560;';
+        searchText = false;
+    } else {
+        searchButton.innerHTML = 'search&#128270';
+        searchText = true;
+    }
 };
-function getAndShow(tasksToDisplay) { // get the list from the sort action or from the local storage and show it in the html
+function getAndShow(tasksToDisplay) { // get the list from the sort action or local storage or undo action and show it in the html
     if (tasksToDisplay[0]) {
         for (let task of tasksToDisplay) {     
             displayTask(task);
@@ -68,6 +116,7 @@ function taskToList() { // put every task in the main list
         priority: selectorValue,
         text: text,
         date: getCurrentDate(),
+        finalDate: finalDateSelect.value,
         checked: false
     };
     containerId++;
@@ -152,7 +201,7 @@ function displayTask(task) { // put the task in div's and show them in the html
         }
       });
     divPriority.innerText = task.priority;
-    divDate.innerText = task.date;
+    divDate.innerText = `Start: ${task.date}\nUntil: ${task.finalDate}`;
     divText.innerText = task.text;
     mainDiv.append(deleteButton);
     mainDiv.append(checkBox);
@@ -162,6 +211,7 @@ function displayTask(task) { // put the task in div's and show them in the html
     console.log(mainDiv);
     viewSection.appendChild(mainDiv);
 };
+// jsonbin functions
 async function jsonBinUpdateTask(updatedtasks) {
     const response = await fetch("https://api.jsonbin.io/v3/b/6012c8c99f55707f6dfd4278", {
         method: "PUT",
@@ -182,7 +232,6 @@ async function jsonBinUpdateTask(updatedtasks) {
         });
     console.log(response);
 };
-
 async function jsonBinGetTasks() {
     try {
         const allTasks = await fetch("https://api.jsonbin.io/v3/b/6012c8c99f55707f6dfd4278", {

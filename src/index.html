@@ -10,30 +10,34 @@
 <body>
   <main id="main">
     <header>
+      <button id="dark-mode">Dark mode</button>
       <h1><u>Todo list</u></h1>
     </header>
     <div class="count">Number of Todo's: <strong id="counter"></strong></div>
     <section id="controlSection">
       <input id="text-input" type="text" name="task" placeholder="Enter new task">
       <button id="add-button">add&#43</button>
-    </input>
       <button id="search-button">search&#128270</button>
-      <div class="box"></div>
+      <div class="priority">Priority:</div>
+      <label for="final-date" class="label">Final date:</label>
+      <input type="date" id="final-date" name="final-date">
       <select name="priority" id="priority-selector">
-        <option value="1">1</option>
+        <option value="1">1-Low</option>
         <option value="2">2</option>
         <option value="3">3</option>
         <option value="4">4</option>
-        <option value="5">5</option>
+        <option value="5">5-High</option>
       </select>
-    </div>  
-    <button id="sort-button">sort &#8645</button>
-    <button id="undo-button">undo &#8634</button>
-      </section>
-      <section id="viewSection">
-        <div id="loading"></div>
-      </section> 
-    </main>  
+      </div>  
+      <button id="sort-button">sort &#8645</button>
+      <button id="undo-button">undo &#8634</button>
+    </section>
+    <section id="viewSection">
+      <div id="loading"></div>
+    </section> 
+  </main>  
+  </hr>
+  <footer id="footer"><span class="footer-text"><strong><u>contact:</u></strong> Ido Leybovtch  -</span><a href="https://github.com/ido-leybo" target="_blank"><img width="30px" src="./github-icon.jpg"></a><a href="https://www.facebook.com/idoleybo" target="_blank"><img style="margin-left: 5px;" width="40px" src="./facebook-icon.jpg"></a></footer>
   <script src="./main.js"></script>
 </body>
 </html>
