@@ -36,7 +36,7 @@ undoButton.addEventListener("click", undo);
 darkModeButton.addEventListener("click", darkModeAction);
 helpButton.addEventListener("click", help);
 function help() {
-   alert('Enter your task to do to the input section, and click on "add" button\nif you want to sort the list by priority, click on "sort" button.\n\nyou can sort just by priority!\n\nif do you have more question you can contact me in facebook\nat the bottom of the page, or in github.')
+   alert('Enter your task to do in Input and click the "Add" button.\nif you want to sort the list by priority, click on the "sort" button.\n\nyou can sort just by priority!\n\nIf you have more questions feel free to contact me on Facebook or github, the link is at the bottom of the page.')
 };
 function darkModeAction() {
     if (!darkMode) {
@@ -90,9 +90,13 @@ function undo(){
     getAndShow(todoListArr);
     undoButton.hidden = true;
 };
-function increaseTasksCounter() {
-    tasksCounter++
-    counter.innerText = tasksCounter;
+function sortTasks() {  // sort the list by priority
+    clean_presented_list();
+    todoListArr = todoListArr.sort((a, b) => b.priority - a.priority);
+    getAndShow(todoListArr);
+}
+function edit(task) {// edit the text to a new one
+    
 };
 function searchGoTo() {
     let text = input_text();
@@ -108,6 +112,21 @@ function searchGoTo() {
         searchText = true;
     }
 };
+function input_text() {
+    let text = inputText.value;
+    inputText.value = '';
+    inputText.focus();
+    return text;
+};
+function increaseTasksCounter() { // count the tasks
+    tasksCounter++
+    counter.innerText = tasksCounter;
+};
+function getCurrentDate() { // get the time that clicked
+    const date = new Date(); 
+    let nDate = date.toISOString().split('T')[0] + ' ' + date.toTimeString().split(' ')[0];
+    return nDate;
+};
 function getAndShow(tasksToDisplay) { // get the list from the sort action or local storage or undo action and show it in the html
     if (tasksToDisplay[0]) {
         for (let task of tasksToDisplay) {     
@@ -117,7 +136,7 @@ function getAndShow(tasksToDisplay) { // get the list from the sort action or lo
         }
     }return;
 };
-function taskToList() { // put every task in the main list
+function taskToList() { // put every task in the main list and send the task to displayTask function
     let selectorValue = selector.value;
     const text = input_text();
     let task = {
@@ -154,36 +173,16 @@ function deleteTaskView(event) {  // delete a task from the list and from the lo
     localStorage.setItem('my-todo', JSON.stringify(todoListArr));
     jsonBinUpdateTask(todoListArr);
 }
-function input_text() {
-    let text = inputText.value;
-    inputText.value = '';
-    inputText.focus();
-    return text;
-};
-function getCurrentDate() { // get the time that clicked
-    const date = new Date(); 
-    let nDate = date.toISOString().split('T')[0] + ' ' + date.toTimeString().split(' ')[0];
-    return nDate;
-};
-function sortTasks() {  // sort the list by priority
-    clean_presented_list();
-    todoListArr = todoListArr.sort((a, b) => b.priority - a.priority);
-    getAndShow(todoListArr);
-}
-function clean_presented_list() { // first it cleans the shown list before the sort action
-    while(viewSection.firstChild){
-        viewSection.removeChild(viewSection.lastChild); 
-    }
-    tasksCounter = 0;
-    counter.innerText = tasksCounter;
-};
+
 function displayTask(task) { // put the task in div's and show them in the html
     const deleteButton = document.createElement("button");
+    deleteButton.setAttribute("id", "deleteButton");
     deleteButton.addEventListener("click", event => {
         deleteTaskView(event)
     });
     deleteButton.classList.add("delete-button");
     deleteButton.innerText = "X";
+    //in this section all the div's are created.
     const mainDiv = document.createElement('div');
     mainDiv.classList.add('todo-container');
     mainDiv.setAttribute("id", `${task.taskId}`);
@@ -197,24 +196,28 @@ function displayTask(task) { // put the task in div's and show them in the html
     // this section is edit button
     const editButton = document.createElement("button");
     const newText = document.createElement("input");
+    newText.setAttribute("class", "new-text-input");
     editButton.innerText = "edit";
     editButton.setAttribute("class", "edit-button");
     newText.setAttribute("type", 'text');
     newText.style.display = "none";
     const submit = document.createElement("button");
+    submit.setAttribute("class", "submit");
     submit.innerText = 'submit';
     submit.style.display = "none";
     editButton.addEventListener("click", event => {
         newText.style.display = "block";
         submit.style.display = "block";
     });
-    submit.addEventListener("click", event => {
+    submit.addEventListener("click", () => {
         if (newText.value !== '') {
             task.text = newText.value;
             divText.innerText = task.text;
         };
         newText.style.display = "none";
         submit.style.display = "none";
+        todoListArr.forEach((index) => index.taskId === task.taskId ? index.text = task.text : null);
+        jsonBinUpdateTask(todoListArr);
     });
     // this section is checkbox
     const checkBox = document.createElement("input");
@@ -246,6 +249,13 @@ function displayTask(task) { // put the task in div's and show them in the html
     mainDiv.append(divText);
     console.log(mainDiv);
     viewSection.appendChild(mainDiv);
+};
+function clean_presented_list() { // first it cleans the shown list before the sort action
+    while(viewSection.firstChild){
+        viewSection.removeChild(viewSection.lastChild); 
+    }
+    tasksCounter = 0;
+    counter.innerText = tasksCounter;
 };
 // jsonbin functions
 async function jsonBinUpdateTask(updatedtasks) {
@@ -291,9 +301,3 @@ window.addEventListener("DOMContentLoaded", async (event) => {
     // todoListArr = tasks;
     getAndShow(todoListArr);
 });
-
-function edit(task) {
-    let newText = document.createElement("input");
-    newText.setAttribute("type", 'text');
-    task.text = newText.value;
-};
