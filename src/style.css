@@ -197,11 +197,17 @@ button {
 .delete-button {
   background-color: rgba(88, 84, 84, 0.623);
   width: 40px;
+  height: 40px;
   font-size: 20px;
 }
 .delete-button:hover {
   background-color: rgba(109, 11, 11, 0.856);
   color: white;
+}
+.edit-button {
+  font-weight: bold;
+  height: 40px;
+  background-color: rgba(158, 152, 152, 0.671);
 }
 #text-input {
   padding: 3px;

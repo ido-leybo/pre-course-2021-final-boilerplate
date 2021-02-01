@@ -194,6 +194,29 @@ function displayTask(task) { // put the task in div's and show them in the html
     divDate.classList.add('todo-created-at');
     const divText = document.createElement('div');
     divText.setAttribute("class", 'todo-text');
+    // this section is edit button
+    const editButton = document.createElement("button");
+    const newText = document.createElement("input");
+    editButton.innerText = "edit";
+    editButton.setAttribute("class", "edit-button");
+    newText.setAttribute("type", 'text');
+    newText.style.display = "none";
+    const submit = document.createElement("button");
+    submit.innerText = 'submit';
+    submit.style.display = "none";
+    editButton.addEventListener("click", event => {
+        newText.style.display = "block";
+        submit.style.display = "block";
+    });
+    submit.addEventListener("click", event => {
+        if (newText.value !== '') {
+            task.text = newText.value;
+            divText.innerText = task.text;
+        };
+        newText.style.display = "none";
+        submit.style.display = "none";
+    });
+    // this section is checkbox
     const checkBox = document.createElement("input");
     checkBox.setAttribute("type", "checkbox");
     checkBox.setAttribute("class", "checkbox");
@@ -213,7 +236,10 @@ function displayTask(task) { // put the task in div's and show them in the html
     divPriority.innerText = task.priority;
     divDate.innerText = `Start: ${task.date}\nUntil: ${task.finalDate}`;
     divText.innerText = task.text;
+    divText.append(newText);
+    divText.append(submit);
     mainDiv.append(deleteButton);
+    mainDiv.append(editButton);
     mainDiv.append(checkBox);
     mainDiv.append(divPriority);
     mainDiv.append(divDate);
@@ -265,4 +291,9 @@ window.addEventListener("DOMContentLoaded", async (event) => {
     // todoListArr = tasks;
     getAndShow(todoListArr);
 });
-    
+
+function edit(task) {
+    let newText = document.createElement("input");
+    newText.setAttribute("type", 'text');
+    task.text = newText.value;
+};
