@@ -26,8 +26,8 @@ body {
 }
 #viewSection {
   position: relative;
-  margin-left: 70px;
-  margin-top: 20px;
+  margin-left: 50px;
+  margin-top: 30px;
   margin-bottom: 10px;
 }
 h1 {
@@ -70,7 +70,7 @@ div {
 .todo-container:hover {
   background-color: rgba(112, 128, 144, 0.582);
   cursor: default;
-  width: 600px;
+  width: 700px;
   border-radius: 3px;
 }
 div .todo-priority {
@@ -120,6 +120,7 @@ div .todo-priority {
   font-size: 18px;
   border-radius: 3px;
   background-color: rgba(119, 127, 136, 0.637);
+  color: white;
 }
 .label {
   font-weight: bold;
@@ -311,6 +312,6 @@ input[type="checkbox"]:checked {
   }
   #viewSection {
     width: 95%;
-    padding: 4%;
+    margin-left: 10px;
   }
 }

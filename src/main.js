@@ -8,6 +8,7 @@ const searchButton = document.getElementById("search-button");
 const loading = document.getElementById("loading");
 const undoButton = document.getElementById("undo-button");
 const darkModeButton = document.getElementById("dark-mode");
+const helpButton = document.getElementById("help-button");
 const finalDateSelect = document.getElementById("final-date");
 
 let tasksCounter = 0;
@@ -33,10 +34,16 @@ searchButton.addEventListener("click", searchGoTo);
 sortButton.addEventListener("click", sortTasks);
 undoButton.addEventListener("click", undo);
 darkModeButton.addEventListener("click", darkModeAction);
+helpButton.addEventListener("click", help);
+function help() {
+   alert('Enter your task to do to the input section, and click on "add" button\nif you want to sort the list by priority, click on "sort" button.\n\nyou can sort just by priority!\n\nif do you have more question you can contact me in facebook\nat the bottom of the page, or in github.')
+};
 function darkModeAction() {
     if (!darkMode) {
         darkModeButton.style.background = 'brown';
         darkModeButton.style.color = 'white';
+        helpButton.style.background = 'brown';
+        helpButton.style.color = 'white';
         document.body.style.backgroundColor = 'darkblue';
         inputText.style.backgroundColor = 'rgb(46, 44, 44)';
         inputText.style.color = 'white';
@@ -54,7 +61,9 @@ function darkModeAction() {
     } else {
         darkModeButton.style.background = 'darkgray';
         darkModeButton.style.color = 'black';
-        document.body.style.backgroundColor = 'brown'
+        helpButton.style.background = 'darkgray';
+        helpButton.style.color = 'black';
+        document.body.style.backgroundColor = 'rgb(217, 171, 42)'
         inputText.style.backgroundColor = 'white';
         inputText.style.color = 'black';
         addButton.style.backgroundColor = '#b7deee';
@@ -69,7 +78,7 @@ function darkModeAction() {
         selector.style.color = 'black';
         darkMode = false;
     }
-}
+};
 function undo(){
     clean_presented_list();
     if(isPreviousAddAction){
@@ -178,6 +187,7 @@ function displayTask(task) { // put the task in div's and show them in the html
     const mainDiv = document.createElement('div');
     mainDiv.classList.add('todo-container');
     mainDiv.setAttribute("id", `${task.taskId}`);
+    mainDiv.setAttribute("draggable", true);
     const divPriority = document.createElement('div');
     divPriority.classList.add('todo-priority');
     const divDate = document.createElement('div');
