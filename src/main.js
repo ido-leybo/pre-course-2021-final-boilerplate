@@ -35,6 +35,7 @@ sortButton.addEventListener("click", sortTasks);
 undoButton.addEventListener("click", undo);
 darkModeButton.addEventListener("click", darkModeAction);
 helpButton.addEventListener("click", help);
+
 function help() {
    alert('Enter your task to do in Input and click the "Add" button.\nif you want to sort the list by priority, click on the "sort" button.\n\nyou can sort just by priority!\n\nIf you have more questions feel free to contact me on Facebook or github, the link is at the bottom of the page.')
 };
@@ -95,9 +96,6 @@ function sortTasks() {  // sort the list by priority
     todoListArr = todoListArr.sort((a, b) => b.priority - a.priority);
     getAndShow(todoListArr);
 }
-function edit(task) {// edit the text to a new one
-    
-};
 function searchGoTo() {
     let text = input_text();
     searchTodoArr = todoListArr.filter(task => task.text.includes(text));
@@ -173,7 +171,6 @@ function deleteTaskView(event) {  // delete a task from the list and from the lo
     localStorage.setItem('my-todo', JSON.stringify(todoListArr));
     jsonBinUpdateTask(todoListArr);
 }
-
 function displayTask(task) { // put the task in div's and show them in the html
     const deleteButton = document.createElement("button");
     deleteButton.setAttribute("id", "deleteButton");
@@ -182,11 +179,35 @@ function displayTask(task) { // put the task in div's and show them in the html
     });
     deleteButton.classList.add("delete-button");
     deleteButton.innerText = "X";
-    //in this section all the div's are created.
+    //---    in this section all the div's are created.  ---// 
     const mainDiv = document.createElement('div');
     mainDiv.classList.add('todo-container');
     mainDiv.setAttribute("id", `${task.taskId}`);
+    // drag'n'drop section 
     mainDiv.setAttribute("draggable", true);
+    mainDiv.style.cursor = "move";
+    mainDiv.addEventListener("dragstart", () => { // What happens during the "dragstart"
+        mainDiv.classList.add("dragging")
+    });
+    mainDiv.addEventListener("dragend", () => { // What happens during the "dragend"
+        mainDiv.classList.remove("dragging");
+        jsonBinUpdateTask(todoListArr);
+    });
+    viewSection.addEventListener("dragover", (event) => { // What happens during the "dragover"
+        event.preventDefault();
+        const afterElement = getDragAfterElement(viewSection, event.clientY);
+        const draggedElement = document.querySelector('.dragging');
+        const fromIndex = todoListArr.findIndex(task => task.taskId === draggedElement.id);
+        if (afterElement == null) {
+            console.log("got here!!")
+            viewSection.appendChild(draggedElement);
+            manageArrayMovment(fromIndex, 0);
+        } else {
+            viewSection.insertBefore(draggedElement, afterElement);
+            let toIndex = todoListArr.findIndex(task => task.taskId === afterElement.id)
+            manageArrayMovment(fromIndex, toIndex - 1);
+        };
+    });
     const divPriority = document.createElement('div');
     divPriority.classList.add('todo-priority');
     const divDate = document.createElement('div');
@@ -250,6 +271,28 @@ function displayTask(task) { // put the task in div's and show them in the html
     console.log(mainDiv);
     viewSection.appendChild(mainDiv);
 };
+function getDragAfterElement(container, y) { 
+    const draggableElements = [...container.querySelectorAll('.todo-container:not(.dragging')];
+
+    return draggableElements.reduce((closest, child) => {
+        const box = child.getBoundingClientRect();
+        const offset = y - box.top - box.height / 2;
+        if (offset < 0 && offset > closest.offset) {
+            return { offset, element: child }
+        } else {
+            return closest
+        }
+    }, { offset: Number.NEGATIVE_INFINITY}).element
+}
+function manageArrayMovment(fromIndex, toIndex) { // changes the array according to the new location of the tasks
+    let element = todoListArr[fromIndex];
+    todoListArr.splice(fromIndex, 1);
+    if (toIndex === 0) {
+        todoListArr.unshift(element);
+    } else {
+        todoListArr.splice(toIndex, 0, element);
+    }
+};
 function clean_presented_list() { // first it cleans the shown list before the sort action
     while(viewSection.firstChild){
         viewSection.removeChild(viewSection.lastChild); 
@@ -259,7 +302,7 @@ function clean_presented_list() { // first it cleans the shown list before the s
 };
 // jsonbin functions
 async function jsonBinUpdateTask(updatedtasks) {
-    const response = await fetch("https://api.jsonbin.io/v3/b/6012c8c99f55707f6dfd4278", {
+    const response = await fetch("https://api.jsonbin.io/v3/b/6012bc696bdb326ce4bc666c", {
         method: "PUT",
         headers: {
                 'Content-Type': "application/json",
@@ -280,7 +323,7 @@ async function jsonBinUpdateTask(updatedtasks) {
 };
 async function jsonBinGetTasks() {
     try {
-        const allTasks = await fetch("https://api.jsonbin.io/v3/b/6012c8c99f55707f6dfd4278", {
+        const allTasks = await fetch("https://api.jsonbin.io/v3/b/6012bc696bdb326ce4bc666c", {
             method: "GET",
             headers: {
                 'X-Master-Key': "$2b$10$trCW.rdQAELT6mq2K5yQE.oywgCXlAnA2tO3Ooj03jYKDLz6jo8f."
@@ -296,7 +339,7 @@ async function jsonBinGetTasks() {
 window.addEventListener("DOMContentLoaded", async (event) => {
     todoListArr = await jsonBinGetTasks();
     if (todoListArr !== null) loading.remove();
-    console.log(todoListArr);
+    // console.log(todoListArr);
     // let tasks = JSON.parse(localStorage.getItem('my-todo') || '[]');
     // todoListArr = tasks;
     getAndShow(todoListArr);

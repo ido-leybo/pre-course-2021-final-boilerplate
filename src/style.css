@@ -73,6 +73,9 @@ div {
   width: 700px;
   border-radius: 3px;
 }
+.todo-container.dragging {
+  opacity: 0.5;
+}
 div .todo-priority {
   font-weight: bold;
   font-size: 30px;
