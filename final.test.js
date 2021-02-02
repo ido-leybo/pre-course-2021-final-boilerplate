@@ -56,6 +56,18 @@ const mocks = {
       metadata,
     },
   },
+  deleteTest: {
+    record: {
+      "my-todo": mockToDos,
+    },
+    metadata, 
+  },
+  deleteTestPut: {
+    record: {
+      "my-todo": mockToDos.slice(1, 1),
+    },
+    metadata,
+  },
 };
 
 jest.setTimeout(10000);
@@ -240,7 +252,7 @@ describe(projectName, () => {
     await page.goto(path, { waitUntil: "networkidle0" });
 
     await page.waitForSelector(".todo-container");
-
+  
     const textNode = await page.$$(".todo-text");
     const priorityNode = await page.$$(".todo-priority");
 
@@ -251,5 +263,24 @@ describe(projectName, () => {
 
     expect(text).toBe(mocks.fetchTest.record["my-todo"][0].text);
     expect(priority).toBe(mocks.fetchTest.record["my-todo"][0].priority);
+  });
+
+  //--- my new test ---//
+  
+  test('delete task from the list and from the jsonBin', async () => {
+     await nock("https://api.jsonbin.io/v3")
+      .get(/.*/)
+      .reply(200, mocks.deleteTest);
+      
+      await nock("https://api.jsonbin.io/v3")
+      .put(/.*/, () => true)
+      .reply(200, mocks.deleteTestPut);
+    
+      await page.goto(path, { waitUntil: "networkidle0" });
+    const Alltodos = await page.$$(".todo-container");
+    expect(Alltodos.length).toBe(2);
+    await page.click("#deleteButton");
+    const newTodos = await page.$$(".todo-container");
+    expect(newTodos.length).toBe(1);
   });
 });

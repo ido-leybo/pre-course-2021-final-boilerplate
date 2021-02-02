@@ -84,7 +84,6 @@ function sortTasks() {  // sort the list by priority
 function searchGoTo() {
     let text = input_text();
     searchTodoArr = todoListArr.filter(task => task.text.includes(text));
-    console.log(searchTodoArr);
     clean_presented_list();
     getAndShow(searchTodoArr);
     if (searchText) {
@@ -150,9 +149,7 @@ function deleteTaskView(event) {  // delete a task from the list and from the lo
     undoButton.hidden = false;
 
     removeDiv.remove();
-    console.log(localStorage);
     todoListArr = todoListArr.filter((task) => task.taskId !== id);
-    console.log(todoListArr)
     localStorage.setItem('my-todo', JSON.stringify(todoListArr));
     jsonBinUpdateTask(todoListArr);
 }
@@ -184,7 +181,6 @@ function displayTask(task) { // put the task in div's and show them in the html
         const draggedElement = document.querySelector('.dragging');
         const fromIndex = todoListArr.findIndex(task => task.taskId === draggedElement.id);
         if (afterElement == null) {
-            console.log("got here!!")
             viewSection.appendChild(draggedElement);
             manageArrayMovment(fromIndex, 0);
         } else {
@@ -203,7 +199,7 @@ function displayTask(task) { // put the task in div's and show them in the html
     const editButton = document.createElement("button");
     const newText = document.createElement("input");
     newText.setAttribute("class", "new-text-input");
-    editButton.innerText = "edit";
+    editButton.innerText = "edit\ntext";
     editButton.setAttribute("class", "edit-button");
     newText.setAttribute("type", 'text');
     newText.style.display = "none";
@@ -253,7 +249,6 @@ function displayTask(task) { // put the task in div's and show them in the html
     mainDiv.append(divPriority);
     mainDiv.append(divDate);
     mainDiv.append(divText);
-    console.log(mainDiv);
     viewSection.appendChild(mainDiv);
 };
 function getDragAfterElement(container, y) { 
@@ -324,7 +319,6 @@ async function jsonBinGetTasks() {
 window.addEventListener("DOMContentLoaded", async (event) => {
     todoListArr = await jsonBinGetTasks();
     if (todoListArr !== null) loading.remove();
-    // console.log(todoListArr);
     // let tasks = JSON.parse(localStorage.getItem('my-todo') || '[]');
     // todoListArr = tasks;
     getAndShow(todoListArr);
