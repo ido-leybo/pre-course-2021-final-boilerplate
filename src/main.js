@@ -37,46 +37,31 @@ darkModeButton.addEventListener("click", darkModeAction);
 helpButton.addEventListener("click", help);
 
 function help() {
-   alert('Enter your task to do in Input and click the "Add" button.\nif you want to sort the list by priority, click on the "sort" button.\n\nyou can sort just by priority!\n\nIf you have more questions feel free to contact me on Facebook or github, the link is at the bottom of the page.')
+   alert(`help!!\n\nEnter your task to do in Input and click the "Add" button.\nif you want to sort the list by priority, click on the "sort" button.\n\nyou can sort just by priority!\n\nIf you have more questions feel free to contact me on Facebook or github, the link is at the bottom of the page.`)
 };
 function darkModeAction() {
+   
     if (!darkMode) {
-        darkModeButton.style.background = 'brown';
-        darkModeButton.style.color = 'white';
-        helpButton.style.background = 'brown';
-        helpButton.style.color = 'white';
-        document.body.style.backgroundColor = 'darkblue';
-        inputText.style.backgroundColor = 'rgb(46, 44, 44)';
-        inputText.style.color = 'white';
-        addButton.style.backgroundColor = 'rgb(46, 44, 44)';
-        addButton.style.color = 'white';
-        searchButton.style.backgroundColor = 'rgb(46, 44, 44)';
-        searchButton.style.color = 'white';
-        undoButton.style.backgroundColor = 'rgb(39, 4, 4)';
-        undoButton.style.color = 'white';
-        sortButton.style.backgroundColor = 'rgb(39, 4, 4)';
-        sortButton.style.color = 'white';
-        selector.style.backgroundColor = 'rgb(39, 4, 4)';
-        selector.style.color = 'gray';
+        darkModeButton.classList.add("dark-head-buttons");
+        helpButton.classList.add("dark-head-buttons");
+        document.body.classList.add("dark-body");
+        inputText.classList.add("dark-buttons");
+        addButton.classList.add("dark-buttons");
+        searchButton.classList.add("dark-buttons");
+        undoButton.classList.add("dark-buttons");
+        sortButton.classList.add("dark-buttons");
+        selector.classList.add("dark-buttons");
         darkMode = true;
     } else {
-        darkModeButton.style.background = 'darkgray';
-        darkModeButton.style.color = 'black';
-        helpButton.style.background = 'darkgray';
-        helpButton.style.color = 'black';
-        document.body.style.backgroundColor = 'rgb(217, 171, 42)'
-        inputText.style.backgroundColor = 'white';
-        inputText.style.color = 'black';
-        addButton.style.backgroundColor = '#b7deee';
-        addButton.style.color = 'black';
-        searchButton.style.backgroundColor = '#b7deee';
-        searchButton.style.color = 'black';
-        undoButton.style.backgroundColor = ' rgb(184, 158, 110)';
-        undoButton.style.color = 'black';
-        sortButton.style.backgroundColor = ' rgb(184, 158, 110)';
-        sortButton.style.color = 'black';
-        selector.style.backgroundColor = 'rgb(184, 158, 110)';
-        selector.style.color = 'black';
+        darkModeButton.classList.remove("dark-head-buttons");
+        helpButton.classList.remove("dark-head-buttons");
+        document.body.classList.remove("dark-body");
+        inputText.classList.remove("dark-buttons");
+        addButton.classList.remove("dark-buttons");
+        searchButton.classList.remove("dark-buttons");
+        undoButton.classList.remove("dark-buttons");
+        sortButton.classList.remove("dark-buttons");
+        selector.classList.remove("dark-buttons");
         darkMode = false;
     }
 };
