@@ -6,18 +6,18 @@
 
 **Bonuses:**
 
-- Delete: https://www.w3schools.com/jsref/met_element_remove.asp
+- Delete button: https://www.w3schools.com/jsref/met_element_remove.asp
 
 - Loading spinner: _ https://www.w3schools.com/howto/howto_css_loader.asp
   _ https://codeburst.io/how-to-create-a-simple-css-loading-spinner-make-it-accessible-e5c83c2e464c
 
-- Search: https://stackoverflow.com/questions/18167236/simple-javascript-search-box
+- Search button: https://stackoverflow.com/questions/18167236/simple-javascript-search-box
 
 - CheckBox: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox
 
-- Dark mode: https://css-tricks.com/a-complete-guide-to-dark-mode-on-the-web
+- Dark mode button: https://css-tricks.com/a-complete-guide-to-dark-mode-on-the-web
 
-- Final date: _ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/date
+- Final date selector: _ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/date
   _ https://www.w3schools.com/tags/att_input_type_date.asp
 
 - Drag'n'drop: _ https://www.youtube.com/watch?v=jfYWwQrtzzY
@@ -25,6 +25,8 @@
 
 - Write test: _ https://www.youtube.com/watch?v=r9HdJ8P6GQI&t=1995s
   _ https://jestjs.io/docs/en/puppeteer
+
+- JsonBin.io
 
 ## on the project -
 
@@ -125,3 +127,5 @@
 - The test check if אhe delete button actually deletes a task from the list,
 
   -and whether the new array is saved Without the deleted value.
+
+**JsonBin.io**
