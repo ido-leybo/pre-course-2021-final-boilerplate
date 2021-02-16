@@ -76,6 +76,11 @@ div {
 .todo-container.dragging {
   opacity: 0.5;
 }
+.todo-text {
+  width: 280px;
+  word-wrap: break-word;
+  background-color: rgba(197, 178, 95, 0.664);
+}
 div .todo-priority {
   font-weight: bold;
   font-size: 30px;
