@@ -1,7 +1,7 @@
 const addButton = document.getElementById("add-button");
 const sortButton = document.getElementById('sort-button');
 const inputText = document.getElementById('text-input');
-const viewSection = document.getElementById('viewSection'); 
+const viewSection = document.getElementById('viewSection');
 const selector = document.getElementById("priority-selector");
 const counter = document.getElementById('counter');
 const searchButton = document.getElementById("search-button");
@@ -16,7 +16,6 @@ let containerId = 0;
 let todoListArr = [];
 let searchTodoArr = [];
 let idArr = [];
-let loadingPage = true;
 let darkMode = false;
 let searchText = true;
 
@@ -37,10 +36,9 @@ darkModeButton.addEventListener("click", darkModeAction);
 helpButton.addEventListener("click", help);
 
 function help() {
-   alert(`help!!\n\nEnter your task to do in Input and click the "Add" button.\nif you want to sort the list by priority, click on the "sort" button.\n\nyou can sort just by priority!\n\nIf you have more questions feel free to contact me on Facebook or github, the link is at the bottom of the page.`)
+    alert(`help!!\n\nEnter your task to do in Input and click the "Add" button.\nif you want to sort the list by priority, click on the "sort" button.\n\nyou can sort just by priority!\n\nIf you have more questions feel free to contact me on Facebook or github, the link is at the bottom of the page.`)
 };
 function darkModeAction() {
-   
     if (!darkMode) {
         darkModeButton.classList.add("dark-head-buttons");
         helpButton.classList.add("dark-head-buttons");
@@ -65,9 +63,9 @@ function darkModeAction() {
         darkMode = false;
     }
 };
-function undo(){
+function undo() {
     clean_presented_list();
-    if(isPreviousAddAction){
+    if (isPreviousAddAction) {
         todoListArr.pop();
     } else {
         todoListArr.push(prevDeleted[0]);
@@ -105,18 +103,18 @@ function increaseTasksCounter() { // count the tasks
     counter.innerText = tasksCounter;
 };
 function getCurrentDate() { // get the time that clicked
-    const date = new Date(); 
+    const date = new Date();
     let nDate = date.toISOString().split('T')[0] + ' ' + date.toTimeString().split(' ')[0];
     return nDate;
 };
 function getAndShow(tasksToDisplay) { // get the list from the sort action or local storage or undo action and show it in the html
     if (tasksToDisplay[0]) {
-        for (let task of tasksToDisplay) {     
+        for (let task of tasksToDisplay) {
             displayTask(task);
             tasksCounter++;
             counter.innerText = tasksCounter;
         }
-    }return;
+    } return;
 };
 function taskToList() { // put every task in the main list and send the task to displayTask function
     let selectorValue = selector.value;
@@ -132,6 +130,7 @@ function taskToList() { // put every task in the main list and send the task to 
     containerId++;
     displayTask(task);
     todoListArr.push(task);
+    loading.style.display = "block";
     jsonBinUpdateTask(todoListArr);
     // localStorage.setItem('my-todo', JSON.stringify(todoListArr));
     isPreviousAddAction = true;
@@ -151,9 +150,11 @@ function deleteTaskView(event) {  // delete a task from the list and from the lo
     removeDiv.remove();
     todoListArr = todoListArr.filter((task) => task.taskId !== id);
     localStorage.setItem('my-todo', JSON.stringify(todoListArr));
+    loading.style.display = "block";
     jsonBinUpdateTask(todoListArr);
 }
 function displayTask(task) { // put the task in div's and show them in the html
+
     const deleteButton = document.createElement("button");
     deleteButton.setAttribute("id", "deleteButton");
     deleteButton.addEventListener("click", event => {
@@ -173,6 +174,7 @@ function displayTask(task) { // put the task in div's and show them in the html
     });
     mainDiv.addEventListener("dragend", () => { // What happens during the "dragend"
         mainDiv.classList.remove("dragging");
+        loading.style.display = "block";
         jsonBinUpdateTask(todoListArr);
     });
     viewSection.addEventListener("dragover", (event) => { // What happens during the "dragover"
@@ -214,11 +216,12 @@ function displayTask(task) { // put the task in div's and show them in the html
     submit.addEventListener("click", () => {
         if (newText.value !== '') {
             task.text = newText.value;
-            divText.innerText = task.text;
+            divText.textContent = task.text;
         };
         newText.style.display = "none";
         submit.style.display = "none";
         todoListArr.forEach((index) => index.taskId === task.taskId ? index.text = task.text : null);
+        loading.style.display = "block";
         jsonBinUpdateTask(todoListArr);
     });
     // this section is checkbox
@@ -237,7 +240,7 @@ function displayTask(task) { // put the task in div's and show them in the html
             task.checked = false;
             event.target.parentElement.style.textDecoration = "none"
         }
-      });
+    });
     divPriority.innerText = task.priority;
     divDate.innerText = `Start: ${task.date}\nUntil: ${task.finalDate}`;
     divText.innerText = task.text;
@@ -251,8 +254,8 @@ function displayTask(task) { // put the task in div's and show them in the html
     mainDiv.append(divText);
     viewSection.appendChild(mainDiv);
 };
-function getDragAfterElement(container, y) { 
-    const draggableElements = [...container.querySelectorAll('.todo-container:not(.dragging')];
+function getDragAfterElement(container, y) {
+    const draggableElements = [...container.querySelectorAll('.todo-container:not(.dragging)')];
 
     return draggableElements.reduce((closest, child) => {
         const box = child.getBoundingClientRect();
@@ -262,8 +265,8 @@ function getDragAfterElement(container, y) {
         } else {
             return closest
         }
-    }, { offset: Number.NEGATIVE_INFINITY}).element
-}
+    }, { offset: Number.NEGATIVE_INFINITY }).element
+};
 function manageArrayMovment(fromIndex, toIndex) { // changes the array according to the new location of the tasks
     let element = todoListArr[fromIndex];
     todoListArr.splice(fromIndex, 1);
@@ -274,51 +277,63 @@ function manageArrayMovment(fromIndex, toIndex) { // changes the array according
     }
 };
 function clean_presented_list() { // first it cleans the shown list before the sort action
-    while(viewSection.firstChild){
-        viewSection.removeChild(viewSection.lastChild); 
+    while (viewSection.firstChild) {
+        viewSection.removeChild(viewSection.lastChild);
     }
     tasksCounter = 0;
     counter.innerText = tasksCounter;
 };
 // jsonbin functions
-async function jsonBinUpdateTask(updatedtasks) {
-    const response = await fetch("https://api.jsonbin.io/v3/b/6012bc696bdb326ce4bc666c", {
+function jsonBinUpdateTask(updatedtasks) {
+    const response = fetch("https://api.jsonbin.io/v3/b/6012bc696bdb326ce4bc666c", {
         method: "PUT",
         headers: {
-                'Content-Type': "application/json",
-                'X-Master-Key': "$2b$10$trCW.rdQAELT6mq2K5yQE.oywgCXlAnA2tO3Ooj03jYKDLz6jo8f."             
-            },
-        body: JSON.stringify({"my-todo": updatedtasks})
-        })
+            'Content-Type': "application/json",
+            'X-Master-Key': "$2b$10$trCW.rdQAELT6mq2K5yQE.oywgCXlAnA2tO3Ooj03jYKDLz6jo8f."
+        },
+        body: JSON.stringify({ "my-todo": updatedtasks })
+    })
         .then(res => {
             return res.json();
         })
         .then(data => {
+            loading.style.display = 'none'
             return data
         })
         .catch(error => {
             console.error(error)
         });
     console.log(response);
+
 };
-async function jsonBinGetTasks() {
-    try {
-        const allTasks = await fetch("https://api.jsonbin.io/v3/b/6012bc696bdb326ce4bc666c", {
-            method: "GET",
-            headers: {
-                'X-Master-Key': "$2b$10$trCW.rdQAELT6mq2K5yQE.oywgCXlAnA2tO3Ooj03jYKDLz6jo8f."
-            },
-        })
-        const text = await allTasks.text();
-        const json = JSON.parse(text);
-        return json.record["my-todo"];
-    } catch (error) {
-        console.error(error);
-    };
+function jsonBinGetTasks() {
+    const fetchPromise = fetch("https://api.jsonbin.io/v3/b/6012bc696bdb326ce4bc666c", {
+        method: "GET",
+        headers: {
+            'X-Master-Key': "$2b$10$trCW.rdQAELT6mq2K5yQE.oywgCXlAnA2tO3Ooj03jYKDLz6jo8f."
+        },
+    }
+    )
+    return fetchPromise.then((res) => {
+        const text = res.json();
+        console.log(text)
+        return text;
+    }).then((data) => {
+        console.log(data);
+        const myTodo = data.record['my-todo'];
+        console.log(myTodo);
+        return myTodo;
+    }).catch((error) => {
+        console.log('Error:', error);
+    })
+
 };
 window.addEventListener("DOMContentLoaded", async (event) => {
     todoListArr = await jsonBinGetTasks();
-    if (todoListArr !== null) loading.remove();
+    console.log(todoListArr);
+    if (todoListArr !== null) {
+        loading.style.display = 'none'
+    };
     // let tasks = JSON.parse(localStorage.getItem('my-todo') || '[]');
     // todoListArr = tasks;
     getAndShow(todoListArr);
