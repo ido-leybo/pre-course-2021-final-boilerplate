@@ -1,62 +1,75 @@
 const express = require('express');
 const app = express();
+const fs = require('fs');
 app.use(express.json());
 
-let tasks = [
-    {
-        id: 'bjhbj1kn',
-        name: 'ido',
-        number: '0526460194'
-    },
-    {
-        id: 'sdfsdf234',
-        name: 'ifat',
-        number: '0526837386'
-    },
-    {
-        id: '2gg2jh3',
-        name: 'itai',
-        number: '0548932482'
-    }
-];
-
 app.get('/b', (req, res) => {
-    res.send(tasks);
+    const binsFolder = './backend/general_collections_bin/ido_bin';
+    fs.readdir(binsFolder, (err, files) => {
+        console.log(files)
+        const filesArr = [];
+        files.forEach(file => {
+            console.log(file)
+            const data = fs.readFileSync(`./backend/general_collections_bin/ido_bin/${file}`, {encoding:'utf8', flag:'r'})
+            filesArr.push(JSON.parse(data));
+        })
+        console.log(filesArr)
+        res.status(200).send(filesArr)
+    });
+    // res.status(200).send('getting');
+    // .forEach(bin => {
+    //     fs.readFileSync(`/${bin}/`,
+    //     {encoding:'utf8', flag:'r'})
+    // });
+    // for(let i = 0; i < )
+    // const data = fs.readFileSync('./1.json',
+    // {encoding:'utf8', flag:'r'});
+    // console.log(data)
+    // res.send(data);
+    // res.send('b');
 });
 app.get('/b/:id', (req, res) => {
     const id = req.params.id;
-
-    for(let task of tasks) {
-        if(task.id === id) {
-            res.send(task)
-            break;
-        }
+    const data = fs.readFileSync(`backend/general_collections_bin/ido_bin/${id}.json`,
+            {encoding:'utf8', flag:'r'});
+    res.send(data);
+});
+app.post('/b/:id', (req, res) => {
+    const tasksJson = JSON.stringify(req.body, null, 6);
+    const id = req.params.id;
+    fs.writeFile(`backend/general_collections_bin/ido_bin/${id}.json`, `${tasksJson}`, (err) => {
+        if (err) return console.log(err);
+        res.status(500);
+        console.log('Hello World > helloworld.json');
+    });
+    res.status(201).send("added");
+});
+app.put('/b/:id', (req, res) => {
+    const id = req.params.id;
+    const { body } = req;
+    try {
+      fs.writeFileSync(
+        `backend/general_collections_bin/ido_bin/${id}.json`,
+        JSON.stringify(body, null, 6)
+      );
+      res.json(body);
+    } catch (e) {
+      res.status(500).json({ message: "Error!", error: e });
     }
 });
-app.post('/b', (req, res) => {
-    tasks.push(req.body);
-    res.send('ok');
-});
-
-app.put('/b', (req, res) => {
-    for(let i = 0; i < tasks.length; i++) {
-        if(tasks[i].id === req.body.id) {
-            tasks[i] = req.body;
-            res.send(req.body);
-        }
-    }
-});
-
 app.delete('/b/:id', (req , res) => {
     const id = req.params.id;
-    for(let task of tasks) {
-        if(task.id === id) {
-            index = tasks.indexOf(task);
-            tasks.splice(index, 1);
-            res.send("Delete");
-            break;
+    const path = `backend/general_collections_bin/ido_bin/${id}.json`;
+    try {
+        if(id) {
+        fs.unlinkSync(path)
+        res.send(`The file "${id}.json" has been deleted`)
+        } else {
+            res.status(404).send('File is undefined')
         }
+    } catch(err) {
+        console.log(err)
     }
 });
-app.listen(3000);
-console.log('Listening to port 3000...');
+
+app.listen(3000, () => console.log('Listening to port 3000...'));
