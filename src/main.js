@@ -131,8 +131,8 @@ function taskToList() { // put every task in the main list and send the task to 
     displayTask(task);
     todoListArr.push(task);
     loading.style.display = "block";
-    jsonBinUpdateTask(todoListArr);
-    postFileToApi(task);
+    // jsonBinUpdateTask(todoListArr);
+    putFileFromApi(todoListArr);
     
     // localStorage.setItem('my-todo', JSON.stringify(todoListArr));
     isPreviousAddAction = true;
@@ -148,12 +148,13 @@ function deleteTaskView(event) {  // delete a task from the list and from the lo
     isPreviousAddAction = false;
     prevDeleted = todoListArr.filter((task) => task.taskId === id);
     undoButton.hidden = false;
-    deleteFileFromApi(removeDiv);
+    // deleteFileFromApi(removeDiv);
     removeDiv.remove();
     todoListArr = todoListArr.filter((task) => task.taskId !== id);
     localStorage.setItem('my-todo', JSON.stringify(todoListArr));
     loading.style.display = "block";
-    jsonBinUpdateTask(todoListArr);
+    putFileFromApi(todoListArr);
+    // jsonBinUpdateTask(todoListArr);
 }
 function displayTask(task) { // put the task in div's and show them in the html
     const deleteButton = document.createElement("button");
@@ -176,7 +177,8 @@ function displayTask(task) { // put the task in div's and show them in the html
     mainDiv.addEventListener("dragend", () => { // What happens during the "dragend"
         mainDiv.classList.remove("dragging");
         loading.style.display = "block";
-        jsonBinUpdateTask(todoListArr);
+        putFileFromApi(todoListArr);
+        // jsonBinUpdateTask(todoListArr);
     });
     viewSection.addEventListener("dragover", (event) => { // What happens during the "dragover"
         event.preventDefault();
@@ -221,10 +223,10 @@ function displayTask(task) { // put the task in div's and show them in the html
         };
         newText.style.display = "none";
         submit.style.display = "none";
-        putFileFromApi(task);
         todoListArr.forEach((index) => index.taskId === task.taskId ? index.text = task.text : null);
         loading.style.display = "block";
-        jsonBinUpdateTask(todoListArr);
+        putFileFromApi(todoListArr);
+        // jsonBinUpdateTask(todoListArr);
     });
     // this section is checkbox
     const checkBox = document.createElement("input");
@@ -285,53 +287,9 @@ function clean_presented_list() { // first it cleans the shown list before the s
     tasksCounter = 0;
     counter.innerText = tasksCounter;
 };
-// jsonbin functions
-function jsonBinUpdateTask(updatedtasks) {
-    console.log(updatedtasks)
-    const response = fetch("https://api.jsonbin.io/v3/b/6012bc526bdb326ce4bc6662", {
-        method: "PUT",
-        headers: {
-            'Content-Type': "application/json",
-            'X-Master-Key': "$2b$10$trCW.rdQAELT6mq2K5yQE.oywgCXlAnA2tO3Ooj03jYKDLz6jo8f."
-        },
-        body: JSON.stringify({ "my-todo": updatedtasks })
-    })
-        .then(res => {
-            return res.json();
-        })
-        .then(data => {
-            loading.style.display = 'none'
-            return data
-        })
-        .catch(error => {
-            console.error(error)
-        });
-    console.log(response);
-};
-function jsonBinGetTasks() {
-    const fetchPromise = fetch("https://api.jsonbin.io/v3/b/6012bc526bdb326ce4bc6662", {
-        method: "GET",
-        headers: {
-            'X-Master-Key': "$2b$10$trCW.rdQAELT6mq2K5yQE.oywgCXlAnA2tO3Ooj03jYKDLz6jo8f."
-        },
-    }
-    )
-    return fetchPromise.then((res) => {
-        const text = res.json();
-        console.log(text)
-        return text;
-    }).then((data) => {
-        console.log(data);
-        const myTodo = data.record['my-todo'];
-        console.log(myTodo);
-        return myTodo;
-    }).catch((error) => {
-        console.log('Error:', error);
-    })
 
-};
 window.addEventListener("DOMContentLoaded", async (event) => {
-    todoListArr = await jsonBinGetTasks();
+    todoListArr = await getFileFromApi();
     console.log(todoListArr);
     if (todoListArr !== null) {
         loading.style.display = 'none'
@@ -340,80 +298,43 @@ window.addEventListener("DOMContentLoaded", async (event) => {
     getAndShow(todoListArr);
 });
 //-- rest Api --//
-function postFileToApi(task) {
-    const data = task;
-    const id = task.taskId;
-    console.log(data)
-    fetch(`http://localhost:3000/b/${id}`, {
-        method: "POST",
-        headers: {
-            'content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-    })
-    .then(res => {
-        console.log(res)
-        res.text()
-    })
-    .catch((err) => {
-        console.error('Error:', err)
-    });
-};
-function deleteFileFromApi(task) {
-    const data = task;
-    const id = task.id;
-    fetch(`http://localhost:3000/b/${id}`, {
-        method: "DELETE"
-    })
-    .then(res => {
-        res.text()
-    })
-    .catch((err) => {
-        console.error(`ERROR!, ${err}`)
-    })
-};
 function putFileFromApi(updateTask) {
     const data = updateTask;
-    const id = updateTask.taskId;
-    console.log(data)
-    fetch(`http://localhost:3000/b/${id}`, {
+    fetch("http://localhost:3001/b/f9b87fa2-9e33-4061-ab1e-136c376487b0", {
         method: "PUT",
         headers: {
             'content-Type': 'application/json'
         },
-        body: JSON.stringify(data)
+        body: JSON.stringify({"my-todo": data})
     })
     .then(res => {
-        console.log(res)
-        res.json()
+        loading.style.display = 'none'
+       return res;
     })
     .catch((err) => {
         console.error('Error:', err)
     });
 };
-
-// function getFileFromApi() {
-//     const apiPromise = fetch("http://localhost:3000/b", {
-//         method: "GET",
-//         headers: {
-//             'Content-Type': 'application/json; charset=utf-8',
-//             'X-Powered-By': 'Express',
-//             'Content-Length':'156',
-//             'Connection': 'keep-alive',
-//             'Keep-Alive': 'timeout=5'
-//         }
-//     })
-
-//     console.log('searech me2')
-//     console.log(apiPromise)
-
-//     return apiPromise.then(res => {
-//         console.log(res)
-//         return res;
-//     })
-//     .catch((err) => {
-//         console.error(`ERROR!, ${err}`)
-//     })
+function getFileFromApi() {
+    const apiPromise = fetch("http://localhost:3001/b/f9b87fa2-9e33-4061-ab1e-136c376487b0", {
+        method: "GET",
+        headers: {
+            'Content-Type': 'application/json; charset=utf-8'
+        }
+    })
+    console.log(apiPromise)
+    return apiPromise.then((res) => {
+        return res.json();
+    })
+    .then((data) => {
+        console.log(data);
+        const myTodo = data.record[0]['my-todo'];
+        console.log(myTodo);
+        return myTodo;
+    })
+    .catch((err) => {
+        console.error(`ERROR!, ${err}`)
+    })
     // const fetchPromise = fetch("http://localhost:3000/b", {
     //     method: "GET",
     //     headers: {
@@ -431,4 +352,81 @@ function putFileFromApi(updateTask) {
     // }).catch((error) => {
     //     console.log('Error:', error);
     // })
+};
+// jsonbin functions
+// function jsonBinUpdateTask(updatedtasks) {
+//     console.log(updatedtasks)
+//     const response = fetch("https://api.jsonbin.io/v3/b/6012bc526bdb326ce4bc6662", {
+//         method: "PUT",
+//         headers: {
+//             'Content-Type': "application/json",
+//             'X-Master-Key': "$2b$10$trCW.rdQAELT6mq2K5yQE.oywgCXlAnA2tO3Ooj03jYKDLz6jo8f."
+//         },
+//         body: JSON.stringify({ "my-todo": updatedtasks })
+//     })
+//         .then(res => {
+//             return res.json();
+//         })
+//         .then(data => {
+//             loading.style.display = 'none'
+//             return data
+//         })
+//         .catch(error => {
+//             console.error(error)
+//         });
+//     console.log(response);
+// };
+// function jsonBinGetTasks() {
+//     const fetchPromise = fetch("https://api.jsonbin.io/v3/b/6012bc526bdb326ce4bc6662", {
+//         method: "GET",
+//         headers: {
+//             'X-Master-Key': "$2b$10$trCW.rdQAELT6mq2K5yQE.oywgCXlAnA2tO3Ooj03jYKDLz6jo8f."
+//         },
+//     }
+//     )
+    // return fetchPromise.then((res) => {
+    //     const text = res.json();
+    //     console.log(text)
+    //     return text;
+    // }).then((data) => {
+    //     console.log(data);
+    //     const myTodo = data.record['my-todo'];
+    //     console.log(myTodo);
+    //     return myTodo;
+    // }).catch((error) => {
+    //     console.log('Error:', error);
+    // })
+
+// };
+// function postFileToApi(task) {
+//     const data = task;
+//     const id = task.taskId;
+//     console.log(data)
+//     fetch(`http://localhost:3000/${id}`, {
+//         method: "POST",
+//         headers: {
+//             'content-Type': 'application/json'
+//         },
+//         body: JSON.stringify(data)
+//     })
+//     .then(res => {
+//         console.log(res)
+//         res.text()
+//     })
+//     .catch((err) => {
+//         console.error('Error:', err)
+//     });
+// };
+// function deleteFileFromApi(task) {
+//     const data = task;
+//     const id = task.id;
+//     fetch(`http://localhost:3000/b/${id}`, {
+//         method: "DELETE"
+//     })
+//     .then(res => {
+//         res.text()
+//     })
+//     .catch((err) => {
+//         console.error(`ERROR!, ${err}`)
+//     })
 // };

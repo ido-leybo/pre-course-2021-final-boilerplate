@@ -1,64 +1,69 @@
-const express = require('express');
+//BASE PREP
+const express = require("express");
+const uuid = require("uuid");
+const fs = require("fs");
 const app = express();
-const fs = require('fs');
+
 app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 
-app.get('/b', (req, res) => {
-    const binsFolder = './backend/general_collections_bin/ido_bin';
-    fs.readdir(binsFolder, (err, files) => {
-        console.log(files)
-        const filesArr = [];
-        files.forEach(file => {
-            console.log(file)
-            const data = fs.readFileSync(`./backend/general_collections_bin/ido_bin/${file}`, {encoding:'utf8', flag:'r'})
-            filesArr.push(JSON.parse(data));
-        })
-        console.log(filesArr)
-        res.status(200).send(filesArr)
+//on GET request: show all bin IDs
+app.get("/all", (req, res) => {
+  fs.readdir(`backend/bins/`, "utf8", (err, files) => {
+    listofTasks = [];
+    files.forEach((file) => {
+      listofTasks.push(file);
     });
-});
-app.get('/b/:id', (req, res) => {
-    const id = req.params.id;
-    const data = fs.readFileSync(`backend/general_collections_bin/ido_bin/${id}.json`,
-            {encoding:'utf8', flag:'r'});
-    res.send(data);
-});
-app.post('/b/:id', (req, res) => {
-    const tasksJson = JSON.stringify(req.body, null, 6);
-    const id = req.params.id;
-    fs.writeFile(`backend/general_collections_bin/ido_bin/${id}.json`, `${tasksJson}`, (err) => {
-        if (err) return console.log(err);
-        res.status(500);
-        console.log('Hello World > helloworld.json');
-    });
-    res.status(201).send("added");
-});
-app.put('/b/:id', (req, res) => {
-    const id = req.params.id;
-    const { body } = req;
-    try {
-      fs.writeFileSync(
-        `backend/general_collections_bin/ido_bin/${id}.json`,
-        JSON.stringify(body, null, 6)
-      );
-      res.json(body);
-    } catch (e) {
-      res.status(500).json({ message: "Error!", error: e });
+    if (listofTasks.length < 1) {
+      return res.status(400).json({
+        msg: `No bins found`,
+      });
+    } else {
+      res.send(`Bins available: \n${listofTasks.join("\n")}`);
     }
+  });
 });
-app.delete('/b/:id', (req , res) => {
-    const id = req.params.id;
-    const path = `backend/general_collections_bin/ido_bin/${id}.json`;
-    try {
-        if(id) {
-        fs.unlinkSync(path)
-        res.send(`The file "${id}.json" has been deleted`)
-        } else {
-            res.status(404).send('File is undefined')
-        }
-    } catch(err) {
-        console.log(err)
+//on GET request: if the specified ID exists, show appropriate bin (show ToDoList basically)
+app.get("/b/:id", (req, res) => {
+  fs.readFile(`backend/bins/${req.params.id}.json`, "utf8", (err, data) => {
+    if (!data) {
+      res.status(400).json(`No bin found by the id of ${req.params.id}`);
+    } else {
+      res.send(JSON.stringify(JSON.parse(data), null, 2));
     }
+  });
+});
+//on a POST request, CREATE a new bin, assign an ID to it, and show it
+app.post("/", (req, res) => {
+  const binID = uuid.v4();
+  let obj = { record: [] };
+  let json = JSON.stringify(obj, null, 2);
+  fs.writeFile(`backend/bins/${binID}.json`, `${json}`, "utf8", () => {
+    res.json(`${binID}`);
+  });
+});
+//on PUT request: update the bin according to it's id
+app.put("/b/:id", (req, res) => {
+  const BIN_ID = req.params.id;
+  let obj = { record: [] };
+  obj.record.push(req.body);
+  let json = JSON.stringify(obj, null, 2);
+  fs.writeFile(`backend/bins/${BIN_ID}.json`, json, "utf8", (data) => {
+    res.send(`bin updated. ${json}`);
+  });
+});
+//on DELETE request: delete the specified bin
+app.delete("/b/:id", (req, res) => {
+  const id = req.params.id;
+  const path = `backend/bins/${req.params.id}.json`;
+  try {
+    fs.unlinkSync(path);
+    res.send(`Deleted ${id}`);
+  } catch (err) {
+    console.log(err);
+  }
 });
 
-app.listen(3000, () => console.log('Listening to port 3000...'));
+const PORT = process.env.PORT || 3001;
+
+app.listen(PORT, () => console.log(`Server Started on port ${PORT}`));
