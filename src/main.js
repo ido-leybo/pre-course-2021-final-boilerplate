@@ -132,6 +132,8 @@ function taskToList() { // put every task in the main list and send the task to 
     todoListArr.push(task);
     loading.style.display = "block";
     jsonBinUpdateTask(todoListArr);
+    postFileToApi(task);
+    
     // localStorage.setItem('my-todo', JSON.stringify(todoListArr));
     isPreviousAddAction = true;
     undoButton.hidden = false;
@@ -146,7 +148,7 @@ function deleteTaskView(event) {  // delete a task from the list and from the lo
     isPreviousAddAction = false;
     prevDeleted = todoListArr.filter((task) => task.taskId === id);
     undoButton.hidden = false;
-
+    deleteFileFromApi(removeDiv);
     removeDiv.remove();
     todoListArr = todoListArr.filter((task) => task.taskId !== id);
     localStorage.setItem('my-todo', JSON.stringify(todoListArr));
@@ -154,7 +156,6 @@ function deleteTaskView(event) {  // delete a task from the list and from the lo
     jsonBinUpdateTask(todoListArr);
 }
 function displayTask(task) { // put the task in div's and show them in the html
-
     const deleteButton = document.createElement("button");
     deleteButton.setAttribute("id", "deleteButton");
     deleteButton.addEventListener("click", event => {
@@ -220,6 +221,7 @@ function displayTask(task) { // put the task in div's and show them in the html
         };
         newText.style.display = "none";
         submit.style.display = "none";
+        putFileFromApi(task);
         todoListArr.forEach((index) => index.taskId === task.taskId ? index.text = task.text : null);
         loading.style.display = "block";
         jsonBinUpdateTask(todoListArr);
@@ -285,7 +287,8 @@ function clean_presented_list() { // first it cleans the shown list before the s
 };
 // jsonbin functions
 function jsonBinUpdateTask(updatedtasks) {
-    const response = fetch("https://api.jsonbin.io/v3/b/6012bc696bdb326ce4bc666c", {
+    console.log(updatedtasks)
+    const response = fetch("https://api.jsonbin.io/v3/b/6012bc526bdb326ce4bc6662", {
         method: "PUT",
         headers: {
             'Content-Type': "application/json",
@@ -304,10 +307,9 @@ function jsonBinUpdateTask(updatedtasks) {
             console.error(error)
         });
     console.log(response);
-
 };
 function jsonBinGetTasks() {
-    const fetchPromise = fetch("https://api.jsonbin.io/v3/b/6012bc696bdb326ce4bc666c", {
+    const fetchPromise = fetch("https://api.jsonbin.io/v3/b/6012bc526bdb326ce4bc6662", {
         method: "GET",
         headers: {
             'X-Master-Key': "$2b$10$trCW.rdQAELT6mq2K5yQE.oywgCXlAnA2tO3Ooj03jYKDLz6jo8f."
@@ -335,6 +337,98 @@ window.addEventListener("DOMContentLoaded", async (event) => {
         loading.style.display = 'none'
     };
     // let tasks = JSON.parse(localStorage.getItem('my-todo') || '[]');
-    // todoListArr = tasks;
     getAndShow(todoListArr);
 });
+//-- rest Api --//
+function postFileToApi(task) {
+    const data = task;
+    const id = task.taskId;
+    console.log(data)
+    fetch(`http://localhost:3000/b/${id}`, {
+        method: "POST",
+        headers: {
+            'content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+    .then(res => {
+        console.log(res)
+        res.text()
+    })
+    .catch((err) => {
+        console.error('Error:', err)
+    });
+};
+function deleteFileFromApi(task) {
+    const data = task;
+    const id = task.id;
+    fetch(`http://localhost:3000/b/${id}`, {
+        method: "DELETE"
+    })
+    .then(res => {
+        res.text()
+    })
+    .catch((err) => {
+        console.error(`ERROR!, ${err}`)
+    })
+};
+function putFileFromApi(updateTask) {
+    const data = updateTask;
+    const id = updateTask.taskId;
+    console.log(data)
+    fetch(`http://localhost:3000/b/${id}`, {
+        method: "PUT",
+        headers: {
+            'content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+    .then(res => {
+        console.log(res)
+        res.json()
+    })
+    .catch((err) => {
+        console.error('Error:', err)
+    });
+};
+
+// function getFileFromApi() {
+//     const apiPromise = fetch("http://localhost:3000/b", {
+//         method: "GET",
+//         headers: {
+//             'Content-Type': 'application/json; charset=utf-8',
+//             'X-Powered-By': 'Express',
+//             'Content-Length':'156',
+//             'Connection': 'keep-alive',
+//             'Keep-Alive': 'timeout=5'
+//         }
+//     })
+
+//     console.log('searech me2')
+//     console.log(apiPromise)
+
+//     return apiPromise.then(res => {
+//         console.log(res)
+//         return res;
+//     })
+//     .catch((err) => {
+//         console.error(`ERROR!, ${err}`)
+//     })
+    // const fetchPromise = fetch("http://localhost:3000/b", {
+    //     method: "GET",
+    //     headers: {
+    //         'Content-Type': 'application/json'
+    //     },
+    // }
+    // )
+    // return fetchPromise.then((res) => {
+    //     const text = res.json();
+    //     console.log(text)
+    //     return text;
+    // }).then((data) => {
+    //     console.log(data);
+    //     return data;
+    // }).catch((error) => {
+    //     console.log('Error:', error);
+    // })
+// };

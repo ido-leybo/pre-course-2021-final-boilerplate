@@ -16,17 +16,6 @@ app.get('/b', (req, res) => {
         console.log(filesArr)
         res.status(200).send(filesArr)
     });
-    // res.status(200).send('getting');
-    // .forEach(bin => {
-    //     fs.readFileSync(`/${bin}/`,
-    //     {encoding:'utf8', flag:'r'})
-    // });
-    // for(let i = 0; i < )
-    // const data = fs.readFileSync('./1.json',
-    // {encoding:'utf8', flag:'r'});
-    // console.log(data)
-    // res.send(data);
-    // res.send('b');
 });
 app.get('/b/:id', (req, res) => {
     const id = req.params.id;
