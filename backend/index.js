@@ -4,9 +4,14 @@ const uuid = require("uuid");
 const fs = require("fs");
 const app = express();
 
+//** middleware functions */
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-
+const delayRequests = (req, res, next) => {
+    setTimeout(() => {next()}, 1000);
+  }
+app.use(delayRequests);
+  
 //on GET request: show all bin IDs
 app.get("/all", (req, res) => {
   fs.readdir(`backend/bins/`, "utf8", (err, files) => {
@@ -15,11 +20,11 @@ app.get("/all", (req, res) => {
       listofTasks.push(file);
     });
     if (listofTasks.length < 1) {
-      return res.status(400).json({
+      return res.status(404).json({
         msg: `No bins found`,
       });
     } else {
-      res.send(`Bins available: \n${listofTasks.join("\n")}`);
+      res.status(200).send(`Bins available: \n${listofTasks.join("\n")}`);
     }
   });
 });
@@ -27,9 +32,9 @@ app.get("/all", (req, res) => {
 app.get("/b/:id", (req, res) => {
   fs.readFile(`backend/bins/${req.params.id}.json`, "utf8", (err, data) => {
     if (!data) {
-      res.status(400).json(`No bin found by the id of ${req.params.id}`);
+      res.status(404).json(`No bin found by the id of ${req.params.id}`);
     } else {
-      res.send(JSON.stringify(JSON.parse(data), null, 2));
+      res.status(200).send(JSON.stringify(JSON.parse(data), null, 2));
     }
   });
 });
@@ -38,19 +43,33 @@ app.post("/", (req, res) => {
   const binID = uuid.v4();
   let obj = { record: [] };
   let json = JSON.stringify(obj, null, 2);
+try {
   fs.writeFile(`backend/bins/${binID}.json`, `${json}`, "utf8", () => {
-    res.json(`${binID}`);
+    res.status(201).json(`${binID}`);
   });
+} catch (err) {
+    res.status(400).send(`ERROR!, ${err}`);
+}
 });
 //on PUT request: update the bin according to it's id
 app.put("/b/:id", (req, res) => {
+try {
   const BIN_ID = req.params.id;
   let obj = { record: [] };
   obj.record.push(req.body);
   let json = JSON.stringify(obj, null, 2);
   fs.writeFile(`backend/bins/${BIN_ID}.json`, json, "utf8", (data) => {
-    res.send(`bin updated. ${json}`);
+    console.log("success");
+    res.status(201).send(req.body);
   });
+} catch {(err) => {
+    res.status(404).json({
+        statusCode: 404,
+        error: true,
+        msg: `File ${BIN_ID} not found`
+    });
+}
+}
 });
 //on DELETE request: delete the specified bin
 app.delete("/b/:id", (req, res) => {

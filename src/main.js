@@ -128,7 +128,7 @@ function taskToList() { // put every task in the main list and send the task to 
         checked: false
     };
     containerId++;
-    displayTask(task);
+    // displayTask(task);
     todoListArr.push(task);
     loading.style.display = "block";
     // jsonBinUpdateTask(todoListArr);
@@ -309,10 +309,21 @@ function putFileFromApi(updateTask) {
     })
     .then(res => {
         loading.style.display = 'none'
-       return res;
+        console.log(res)
+        return res.json()
+    })
+    .then(task => {
+        console.log(task)
+        clean_presented_list();
+        task["my-todo"].forEach((task) => {
+            increaseTasksCounter()
+            displayTask(task)
+        });
     })
     .catch((err) => {
-        console.error('Error:', err)
+        errHandling(err, putFileFromApi, data);
+        // alert(`${err}\n status: 404\nURL is nut defined!`);
+        // console.error(`ERROR!, ${err}`);
     });
 };
 function getFileFromApi() {
@@ -333,7 +344,9 @@ function getFileFromApi() {
         return myTodo;
     })
     .catch((err) => {
-        console.error(`ERROR!, ${err}`)
+        errHandling(err, getFileFromApi)
+        // alert(`${err}`);
+        // console.error(`ERROR!, ${err}\n${errorTypes}`);
     })
     // const fetchPromise = fetch("http://localhost:3000/b", {
     //     method: "GET",
@@ -352,6 +365,34 @@ function getFileFromApi() {
     // }).catch((error) => {
     //     console.log('Error:', error);
     // })
+};
+const divErr = document.createElement("div");
+const refresh = document.createElement("button");
+const errMsg = document.createElement("p");
+divErr.style.display = "none";
+refresh.style.height = "20px";
+refresh.innerText = "refresh";
+divErr.append(errMsg);
+divErr.append(refresh);
+viewSection.append(divErr);
+
+function errHandling(err, eventName, task = "") {
+    divErr.style.display = "inline";
+    errMsg.innerHTML = `<h2>ERROR!</h2>\n\n\n\n
+    <strong>${err}</strong>\n\n\n\n
+    <h4>to retry press the button</h4>`;
+    if(task === "") {
+    refresh.addEventListener("click", () => {
+        divErr.style.display = "none";
+        eventName()
+    });
+    } else {
+        refresh.addEventListener("click", () => {
+            divErr.style.display = "none";
+            eventName(task)
+        });
+    }
+    
 };
 // jsonbin functions
 // function jsonBinUpdateTask(updatedtasks) {
