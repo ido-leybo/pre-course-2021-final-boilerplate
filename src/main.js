@@ -141,7 +141,6 @@ function taskToList() { // put every task in the main list and send the task to 
 function deleteTaskView(event) {  // delete a task from the list and from the local storage.
     tasksCounter--;
     counter.innerText = tasksCounter;
-
     let removeDiv = event.target.parentElement;
     let id = removeDiv.id;
     //prev section
@@ -308,19 +307,20 @@ function putFileFromApi(updateTask) {
         body: JSON.stringify({"my-todo": data})
     })
     .then(res => {
-        loading.style.display = 'none'
+        loading.style.display = 'none';
         console.log(res)
         return res.json()
     })
-    .then(task => {
-        console.log(task)
+    .then(tasks => {
+        console.log(tasks)
         clean_presented_list();
-        task["my-todo"].forEach((task) => {
+        tasks["my-todo"].forEach((task) => {
             increaseTasksCounter()
             displayTask(task)
         });
     })
     .catch((err) => {
+        loading.style.display = 'none';
         errHandling(err, putFileFromApi, data);
         // alert(`${err}\n status: 404\nURL is nut defined!`);
         // console.error(`ERROR!, ${err}`);
@@ -344,27 +344,9 @@ function getFileFromApi() {
         return myTodo;
     })
     .catch((err) => {
+        loading.style.display = 'none';
         errHandling(err, getFileFromApi)
-        // alert(`${err}`);
-        // console.error(`ERROR!, ${err}\n${errorTypes}`);
     })
-    // const fetchPromise = fetch("http://localhost:3000/b", {
-    //     method: "GET",
-    //     headers: {
-    //         'Content-Type': 'application/json'
-    //     },
-    // }
-    // )
-    // return fetchPromise.then((res) => {
-    //     const text = res.json();
-    //     console.log(text)
-    //     return text;
-    // }).then((data) => {
-    //     console.log(data);
-    //     return data;
-    // }).catch((error) => {
-    //     console.log('Error:', error);
-    // })
 };
 const divErr = document.createElement("div");
 const refresh = document.createElement("button");
@@ -384,15 +366,16 @@ function errHandling(err, eventName, task = "") {
     if(task === "") {
     refresh.addEventListener("click", () => {
         divErr.style.display = "none";
+        loading.style.display = 'block';
         eventName()
     });
     } else {
         refresh.addEventListener("click", () => {
             divErr.style.display = "none";
+            loading.style.display = 'block';
             eventName(task)
         });
     }
-    
 };
 // jsonbin functions
 // function jsonBinUpdateTask(updatedtasks) {
